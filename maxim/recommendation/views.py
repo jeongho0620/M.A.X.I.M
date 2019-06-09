@@ -68,10 +68,17 @@ def result(request) :
 
     # Find class with class name
     my_class = Class.objects.filter(name = rq.selected_class)
+    lk = my_class[0].like
 
     # Find class description with class name
     class_dscp = Class_Description.objects.filter(subject = rq.selected_class)
 
     # Find academy information with class name
     my_aca = Academy.objects.filter(name = my_class[0].academy_name)
-    return render(request, 'result.html', {'my_class' : my_class , 'class_dscp' : class_dscp , 'my_aca' : my_aca})
+    
+    # Student can check his interest
+    if request.method == "POST" : 
+        my_class.update(like = lk+1)
+        return redirect('result')
+    else :
+        return render(request, 'request.html',{'my_class' : my_class , 'class_dscp' : class_dscp , 'my_aca' : my_aca})
